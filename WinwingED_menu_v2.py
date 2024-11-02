@@ -6,11 +6,25 @@ import socket
 import json
 import datetime
 
+# Initialize variables to store the vendor and product ID
+vendor_id = None
+product_id = None
+
+for device in hid.enumerate():
+    if device['product_string'] == 'WINWING UFC1':
+        vendor_id = f"0x{device['vendor_id']:04x}"
+        product_id = f"0x{device['product_id']:04x}"
+        break
+
+# Check if the device was found
+if vendor_id is None or product_id is None:
+    print("WINWING UFC not found. Exiting")
+    exit()
+
 gamepad = hid.device()
-gamepad.open(0x4098, 0xbed0)
+gamepad.open(int(vendor_id, 16), int(product_id, 16))
 gamepad.set_nonblocking(True)
 keyboard = Controller()
-
 
 #Initialise button states
 button_names = ['IP','1', '2', '3', '4','5','6',
